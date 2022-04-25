@@ -83,6 +83,14 @@ Client: Docker Engine - Community
 
 ```
 
+### add non root user to use docker 
+
+```
+[root@docker-linux-host1 ~]# useradd sag
+[root@docker-linux-host1 ~]# usermod -aG docker sag
+[root@docker-linux-host1 ~]# echo "OracleTr098#"  |  passwd sag --stdin 
+```
+
 ### FROm client -- / dev / admin laptops we will be using vscode to connect docker and k8s 
 
 ### Download vscode link
@@ -129,4 +137,79 @@ openjdk             latest              34aba91dbd13        3 weeks ago         
 <img src="app_cont1.png">
 
 
+### taking sample html webapp 
 
+```
+git clone https://github.com/microsoft/project-html-website
+
+```
+
+### creating dockerfile where dockerfile will have 
+
+<ol>
+ <li> Os Libs </li>
+ <li> any app server </li>
+ <li> source code of app </li>
+</ol>
+
+### apache webserver 
+
+<img src="httpd.png">
+
+### Dockerfile 
+
+```
+FROM oraclelinux:8.4 
+# to run my webapp we need some base image 
+LABEL email=ashutoshh@linux.com 
+# sharing contact info with docker image users {optional part}
+RUN yum install httpd -y 
+# installing httpd inside oraclelinux image 
+COPY  . /var/www/html/
+# copy all the data from dockerfile location to /var/www/html/ in new image
+EXPOSE 80 
+# apache httpd default port for http request
+ENTRYPOINT  httpd -DFOREGROUND
+# we are using to start process during container creation
+
+```
+
+### .dockerignore 
+
+```
+ Dockerfile
+.dockerignore
+LICENSE
+README.md
+.git
+```
+
+### building docker image
+
+```
+docker build -t ashuwebapp:apr25v1 . 
+Sending build context to Docker daemon  833.5kB
+Step 1/6 : FROM oraclelinux:8.4
+Trying to pull repository docker.io/library/oraclelinux ... 
+8.4: Pulling from docker.io/library/oraclelinux
+a4df6f21af84: Pull complete 
+Digest: sha256:b81d5b0638bb67030b207d28586d0e714a811cc612396dbe3410db406998b3ad
+Status: Image is up to date for oraclelinux:8.4
+ ---> 97e22ab49eea
+Step 2/6 : LABEL email=ashutoshh@linux.com
+ ---> Running in f91d683f0a19
+Removing intermediate container f91d683f0a19
+```
+
+### checking images
+
+```
+[ashu@docker-linux-host1 project-html-website]$ docker  images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+sudhakarapp         apr25thv1           9474656b71d3        5 seconds ago       419MB
+<none>              <none>              35d40d4fbf3b        12 seconds ago      246MB
+muskanwebapp        apr25v1             2c51dff1a225        40 seconds ago      419MB
+arunwebapp          apr25day1           3fa2c6f22f12        40 seconds ago      419MB
+vedeshwebapp        apr25v1             bbefe79744be        42 seconds ago      419MB
+mywebpage           v1.0
+```
