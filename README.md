@@ -304,3 +304,25 @@ ashuwebc1
 [ashu@docker-linux-host1 project-html-website]$ docker run -itd --name  ashuwebc1 -p  1234:80  ashuwebapp:apr25v1
 ```
 
+### pushing image to docker hub 
+
+```
+docker  tag  ashuwebapp:apr25v1   dockerashu/ashuwebapp:apr25v1 
+[ashu@docker-linux-host1 project-html-website]$ 
+[ashu@docker-linux-host1 project-html-website]$ docker login 
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: dockerashu
+Password: 
+WARNING! Your password will be stored unencrypted in /home/ashu/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+[ashu@docker-linux-host1 project-html-website]$ docker push  dockerashu/ashuwebapp:apr25v1
+The push refers to repository [docker.io/dockerashu/ashuwebapp]
+32160d4b43c2: Pushed 
+1698c557758b: Pushing [=====================>                             ]  73.14MB/171.8MB
+2d3586eacb61: Mounted from baloria/amitwebapp 
+
+```
+
