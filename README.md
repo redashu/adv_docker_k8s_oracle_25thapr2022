@@ -1,1 +1,4 @@
-# adv_docker_k8s_oracle_25thapr2022
+# training_plan 
+
+<img src="plan.png">
+
