@@ -326,3 +326,62 @@ The push refers to repository [docker.io/dockerashu/ashuwebapp]
 
 ```
 
+### tip to remove all the containers 
+
+```
+docker rm $(docker  ps -aq) -f
+```
+
+### docker bridge -- None 
+
+```
+[ashu@docker-linux-host1 project-html-website]$ docker network ls 
+NETWORK ID          NAME                DRIVER              SCOPE
+1a3c640ac0bc        bridge              bridge              local
+fb279736346d        host                host                local
+3cd58c9da33f        none                null                local
+[ashu@docker-linux-host1 project-html-website]$ docker  run  -ti --rm  --network  none   alpine  sh 
+/ # ping google.com 
+^C
+/ # ifconfig 
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+/ # exit
+```
+
+
+### creating custom bridge 
+
+```
+docker  network  create  ashubr1
+7c5c80e9842cd011ef4f6f92dff751993c1bc04ca774570eb09aabfd007b9208
+[ashu@docker-linux-host1 project-html-website]$ docker network ls 
+NETWORK ID          NAME                DRIVER              SCOPE
+7c5c80e9842c        ashubr1             bridge              local
+```
+
+### 
+
+```
+docker  network  create  ashubr2 --subnet  192.168.100.0/24 
+089804ddc1f42694439f5ed91e0a6b956e3413f88a1dc39522df43439cffe8a4
+[ashu@docker-linux-host1 project-html-website]$ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+c60598ab3fa8        arunbr1             bridge              local
+7c5c80e9842c        ashubr1             bridge              local
+```
+
+### can create contianer 
+
+```
+7  docker run -itd --name test1  --network ashubr1  alpine  sh 
+   98  docker  exec -it  test1  sh 
+   99  history 
+[ashu@docker-linux-host1 project-html-website]$ docker rm test1 -f
+```
