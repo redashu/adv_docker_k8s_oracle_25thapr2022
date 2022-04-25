@@ -213,3 +213,94 @@ arunwebapp          apr25day1           3fa2c6f22f12        40 seconds ago      
 vedeshwebapp        apr25v1             bbefe79744be        42 seconds ago      419MB
 mywebpage           v1.0
 ```
+### docker networking understanding
+
+### default docker networks 
+
+<img src="dnet.png">
+
+### list of netowrks 
+
+```
+docker  network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+1a3c640ac0bc        bridge              bridge              local
+fb279736346d        host                host                local
+3cd58c9da33f        none                null                local
+[ashu@docker-linux-host1 project-html-website]$ 
+```
+
+### understanding bridge
+
+```
+docker  network inspect  bridge 
+[
+    {
+        "Name": "bridge",
+        "Id": "1a3c640ac0bc6cf89468bf1c99b55aee38a9b0d1252c586f911fe801702a56a5",
+        "Created": "2022-04-25T05:00:30.826047371Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {},
+        "Options": {
+            "com.docker.network.bridge.default_bridge": "true",
+            "com.docker.network.bridge.enable_icc": "true",
+            "com.docker.network.bridge.enable_ip_masquerade": "true",
+            "com.docker.network.bridge.host_binding_ipv4": "0.0.0.0",
+            "com.docker.network.bridge.name": "docker0",
+            "com.docker.network.driver.mtu": "1500"
+        },
+        "Labels": {}
+    }
+]
+[ashu@docker-linux-host1 project-html-website]$ 
+```
+
+### creating first container 
+
+```
+docker run -itd --name  ashuwebc1 ashuwebapp:apr25v1
+   30  history 
+[ashu@docker-linux-host1 project-html-website]$ docker  ps
+CONTAINER ID        IMAGE                COMMAND                  CREATED             STATUS              PORTS               NAMES
+f377dee4e90e        ashuwebapp:apr25v1   "/bin/sh -c 'httpd -…"   5 seconds ago       Up 3 seconds        80/tcp              ashuwebc1
+```
+
+### creating container with default parent process 
+### 
+
+```
+ docker run -it --rm  --entrypoint bash  b978f1934272
+```
+
+### tip to remove all the non running container 
+
+```
+ docker rm $(docker ps -q -f status="exited")
+```
+
+### creating container with port farwording 
+
+```
+ docker  rm  ashuwebc1 -f
+ashuwebc1
+[ashu@docker-linux-host1 project-html-website]$ docker run -itd --name  ashuwebc1 -p  1234:80  ashuwebapp:apr25v1
+```
+
