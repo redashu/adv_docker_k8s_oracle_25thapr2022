@@ -429,3 +429,26 @@ docker run -itd --name ashuapp2  -p 1133:80   --memory 700M --cpu-shares=30     
 <img src="restart.png">
 
 
+### Manage docker host using webui 
+
+<img src="webui.png">
+
+### deploy portainer webui 
+
+```
+docker  run -itd --name webui -p 9000:9000 --restart always --cpu-shares 40  --memory 1G  -v /var/run//docker.sock:/var/run/docker.sock  portainer/portainer 
+Unable to find image 'portainer/portainer:latest' locally
+Trying to pull repository docker.io/portainer/portainer ... 
+latest: Pulling from docker.io/portainer/portainer
+94cfa856b2b1: Pull complete 
+49d59ee0881a: Pull complete 
+a2300fd28637: Pull complete 
+Digest: sha256:fb45b43738646048a0a0cc74fcee2865b69efde857e710126084ee5de9be0f3f
+Status: Downloaded newer image for portainer/portainer:latest
+572351b03ceacf52ec0b5853fb583657bcb08d9cd8ef02be37e142790c3088f1
+[ashu@docker-linux-host1 project-html-website]$ docker ps
+CONTAINER ID        IMAGE                 COMMAND             CREATED             STATUS              PORTS                    NAMES
+572351b03cea        portainer/portainer   "/portainer"        4 seconds ago       Up 2 seconds        0.0.0.0:9000->9000/tcp   webui
+[ashu@docker-linux-host1 project-html-website]$ 
+
+```
