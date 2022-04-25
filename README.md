@@ -385,3 +385,25 @@ c60598ab3fa8        arunbr1             bridge              local
    99  history 
 [ashu@docker-linux-host1 project-html-website]$ docker rm test1 -f
 ```
+## SOme docker network related commands 
+
+```
+ 116  docker  run -itd --name ashuc1  --network subbubr1   alpine 
+  117  docker  run -itd --name ashuc2  --network subbubr1   alpine 
+  118  docker  run -itd --name ashuc3 --network subbubr2  alpine 
+  119  docker   exec -it  ashuc3 sh 
+  120  history 
+  121  docker network connect subbubr1  ashuc3
+  122  docker   exec -it  ashuc3 sh 
+  123  docker network disconnect subbubr1  ashuc3
+```
+
+### bridge drivers in docker networking 
+
+<img src="br_driver.png">
+
+### macVLAN 
+
+
+<img src="macvlan.png">
+
