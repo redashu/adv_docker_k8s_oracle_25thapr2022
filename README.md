@@ -407,3 +407,25 @@ c60598ab3fa8        arunbr1             bridge              local
 
 <img src="macvlan.png">
 
+### creating MACVLAN -- driver bridge {keep that thing in mind to have controlled Network }
+
+
+```
+docker  network  create  -d macvlan --subnet 192.168.1.0/24  --gateway 192.168.1.254  -o parent=ens33   ashubrx33
+```
+
+### Cgroups in container 
+
+<img src="cg.png">
+
+### 
+
+```
+docker run -itd --name ashuapp2  -p 1133:80   --memory 700M --cpu-shares=30     ashuwebapp:apr25v1
+818c95b9e5e188ea7846046941df173a6caf283871ec0b6f5e9ee180e100b5a5
+```
+### container restart policy 
+
+<img src="restart.png">
+
+
