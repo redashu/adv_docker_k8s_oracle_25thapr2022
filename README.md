@@ -134,6 +134,24 @@ control-plane   Ready    control-plane,master   9d    v1.23.5
 node1           Ready    <none>                 9d    v1.23.5
 ```
 
+## Control plane components
+
+### api-server
+
+<img src="apis.png">
+
+### etcd 
+
+<img src="etcd.png">
+
+### kube-schedular 
+
+<img src="sch.png">
+
+### Minion / worker side Components
+
+<img src="min.png">
+
 
 
 
