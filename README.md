@@ -291,3 +291,98 @@ NAME         READY   STATUS             RESTARTS   AGE     IP                NOD
 ashupod555   1/1     Running            0          16s     192.168.50.200    minion3   <none>           <none>
  ```
 
+### assignment alpine python code 
+
+```
+cat Dockerfile 
+FROM alpine
+RUN apk add python3
+RUN mkdir  /app
+ADD https://raw.githubusercontent.com/redashu/pythonLang/main/while.py  /app/
+WORKDIR /app
+ENTRYPOINT  python3  while.py 
+
+```
+
+### for project or customer  / developer isolation we can use Namespace in k8s 
+
+```
+
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  namespaces
+NAME              STATUS   AGE
+ajeet-ns          Active   5d21h
+ashu-project      Active   5d21h
+default           Active   9d
+kube-node-lease   Active   9d
+kube-public       Active   9d
+kube-system       Active   9d
+
+```
+
+### creating namespace 
+
+```
+ kubectl  create  namespace  ashu-oci 
+namespace/ashu-oci created
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  namespaces             
+NAME              STATUS   AGE
+ajeet-ns          Active   5d21h
+amit              Active   25s
+ashu-oci          Active   9s
+ashu-project      Active   5d21h
+
+```
+
+### changing default namespace for k8s client 
+
+```
+kubectl  config set-context --current --namespace ashu-oci
+Context "kubernetes-admin@kubernetes" modified.
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get pods                                         
+No resources found in ashu-oci namespace.
+fire@ashutoshhs-MacBook-Air ~ % kubectl  config get-contexts                              
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin   ashu-oci
+```
+
+###  depoy pod using private image registry 
+
+```
+kubectl  run  ashuapp2  --image=phx.ocir.io/axmbtg8judkl/oracleapp:v1  --port 80  --dry
+-run=client -o yaml >ocr.yaml 
+```
+
+### deploy and check 
+```
+ kubectl  create -f  ocr.yaml 
+pod/ashuapp2 created
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get pods
+NAME          READY   STATUS         RESTARTS   AGE
+ashuapp2      0/1     ErrImagePull   0          6s
+```
+
+### intro to secret in k8s 
+
+```
+kubectl  create secret
+Create a secret using specified subcommand.
+
+Available Commands:
+  docker-registry Create a secret for use with a Docker registry
+  generic         Create a secret from a local file, directory, or literal value
+  tls             Create a TLS secret
+
+```
+### creating secret to 
+```
+kubectl  create  secret  docker-registry  ashusec2  --docker-server=phx.ocir.io  --dock
+er-username="axmbtg8judkl/learntechbyme@gmail.com"  --docker-password="g4Z{gD[YEPehX{Stj)(4" 
+secret/ashusec2 created
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get secret
+NAME                  TYPE                                  DATA   AGE
+ashusec2              kubernetes.io/dockerconfigjson        1      26s
+```
+
+
+
+
