@@ -451,6 +451,52 @@ pod "sh" deleted
 
 ```
 
+## tips in k8s 
+
+### backup pod and redeploy 
+
+```
+kubectl  get  po 
+NAME          READY   STATUS    RESTARTS   AGE
+ashuapp2      1/1     Running   0          69m
+ashupod-123   1/1     Running   0          95m
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  po   ashuapp2  -o yaml  >backuppod.yaml 
+fire@ashutoshhs-MacBook-Air ~ % kubectl delete pod ashuapp2 
+pod "ashuapp2" deleted
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  po                                      
+NAME          READY   STATUS    RESTARTS   AGE
+ashupod-123   1/1     Running   0          95m
+fire@ashutoshhs-MacBook-Air ~ % kubectl create -f backuppod.yaml 
+pod/ashuapp2 created
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  po                
+NAME          READY   STATUS    RESTARTS   AGE
+ashuapp2      1/1     Running   0          3s
+ashupod-123   1/1     Running   0          96m
+
+```
+
+### tip2 
+
+```
+1020  kubectl  get  po 
+ 1021  kubectl  get  po --all
+ 1022  kubectl  get  ns
+ 1023  kubectl  config get-contexts 
+ 1024  kubectl  get ns  ashu-oci -o yaml  >ns_backup.yaml 
+ 1025  kubectl  get po 
+ 1026  echo  "---"  >>ns_backup.yaml
+ 1027  kubectl  get po ashuapp2  -oyaml >>ns_backup.yaml
+ 1028  echo  "---"  >>ns_backup.yaml
+ 1029  kubectl  get po ashupod-123  -oyaml >>ns_backup.yaml
+ 1030  kubectl delete ns ashu-oci 
+ 1031  kubectl  get ns
+ 1032  vim ns_backup.yaml
+ 1033  kubectl create -f ns_backup.yaml
+ 1034  kubectl get  po
+ 1035  kubectl get  ns
+
+```
+
 
 
 
