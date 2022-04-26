@@ -152,6 +152,106 @@ node1           Ready    <none>                 9d    v1.23.5
 
 <img src="min.png">
 
+### K8s -- pod Introduction 
 
+<img src="pod1.png">
+
+### creating first pod file 
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ashupod-123  # name of pod 
+spec:
+  containers:
+  - name: ashuc1 # name of contianer 
+    image: docker.io/dockerashu/ashuwebapp:apr25v1 # image from docker hub 
+    ports: # app port number 
+    - containerPort: 80
+```
+
+### checking syntax of file 
+
+```
+ kubectl create -f  ashuwebapp.yaml  --dry-run=client 
+pod/ashupod-123 created (dry run)
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % 
+```
+
+### deploy pod file 
+
+```
+kubectl create -f  ashuwebapp.yaml                   
+pod/ashupod-123 created
+==
+kubectl  get  pods
+NAME             READY   STATUS              RESTARTS   AGE
+ashupod-123      1/1     Running             0          12s
+myapp-amit       1/1     Running             0          2m30s
+santoshpod-123   0/1     ContainerCreating   0          7s
+subbu-123        0/1     ContainerCreating   0          8s
+vedeshpod-123    1/1     Running             0          8s
+
+```
+### delete pod 
+
+```
+kubectl  delete pod anandapod-123
+pod "anandapod-123" deleted
+```
+
+### more details about pod 
+
+```
+kubectl  get  po -o wide
+NAME             READY   STATUS    RESTARTS   AGE     IP                NODE      NOMINATED NODE   READINESS GATES
+anandapod-111    1/1     Running   0          3m14s   192.168.179.198   minion2   <none>           <none>
+arunpod-1        1/1     Running   0          9m19s   192.168.50.195    minion3   <none>           <none>
+ashupod-123      1/1     Running   0          2m      192.168.179.199   minion2   <none>           <none>
+muskan-123       1/1     Running   0          45s     192.168.50.199    minion3   <none>           <none>
+```
+
+### access container inside Pod 
+
+```
+ 
+fire@ashutoshhs-MacBook-Air ~ % kubectl  exec -it  ashupod-123  -- bash
+[root@ashupod-123 /]# cat  /etc/os-release 
+NAME="Oracle Linux Server"
+VERSION="8.4"
+ID="ol"
+ID_LIKE="fedora"
+VARIANT="Server"
+VARIANT_ID="server"
+VERSION_ID="8.4"
+PLATFORM_ID="platform:el8"
+PRETTY_NAME="Oracle Linux Server 8.4"
+ANSI_COLOR="0;31"
+CPE_NAME="cpe:/o:oracle:linux:8:4:server"
+HOME_URL="https://linux.oracle.com/"
+BUG_REPORT_URL="https://bugzilla.oracle.com/"
+
+ORACLE_BUGZILLA_PRODUCT="Oracle Linux 8"
+ORACLE_BUGZILLA_PRODUCT_VERSION=8.4
+ORACLE_SUPPORT_PRODUCT="Oracle Linux"
+ORACLE_SUPPORT_PRODUCT_VERSION=8.4
+[root@ashupod-123 /]# exit
+exit
+
+```
+
+### more commands of pod
+
+```
+kubectl  get  po -o wide
+NAME             READY   STATUS    RESTARTS   AGE     IP                NODE      NOMINATED NODE   READINESS GATES
+anandapod-111    1/1     Running   0          9m18s   192.168.179.198   minion2   <none>           <none>
+arunpod-1        1/1     Running   0          15m     192.168.50.195    minion3   <none>           <none>
+ashupod-123      1/1     Running   0          8m4s    192.168.179.199   minion2   <none>           <none>
+ashupod-567      1/1     Running   0          23s     192.168.166.166   node1     <none>           <none>
+muskan-123       1/1     Running   0          6m49s   192.168.50.199    minion3   <none>           <none>
+muthupod-123     1/1     Running   0      
+```
 
 
