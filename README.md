@@ -69,6 +69,70 @@ Removing login credentials for phx.ocir.io
 
 ```
 
+## to solve container Cluster problem -- we need k8s 
+
+### architecture  -- 
+
+### Level 1
+
+<img src="lv1.png">
+### setup methods for k8s cluster 
+
+<img src="setup.png">
+
+### Installing kubeclt on client machine 
+
+### On mac 
+
+```
+ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/amd64/kubectl"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   154  100   154    0     0    374      0 --:--:-- --:--:-- --:--:--   374
+100 50.6M  100 50.6M    0     0  5077k      0  0:00:10  0:00:10 --:--:-- 6048k
+fire@ashutoshhs-MacBook-Air ~ % chmod +x ./kubectl
+fire@ashutoshhs-MacBook-Air ~ % sudo mv ./kubectl /usr/local/bin/kubectl
+Password:
+fire@ashutoshhs-MacBook-Air ~ % sudo chown root: /usr/local/bin/kubectl
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % kubectl  version --client
+Client Version: version.Info{Major:"1", Minor:"23", GitVersion:"v1.23.6", GitCommit:"ad3338546da947756e8a88aa6822e9c11e7eac22", GitTreeState:"clean", BuildDate:"2022-04-14T08:49:13Z", GoVersion:"go1.17.9", Compiler:"gc", Platform:"darwin/amd64"}
+
+```
+
+### checking kubeconfig file to test k8s conection 
+
+```
+
+fire@ashutoshhs-MacBook-Air Desktop % kubectl   get  nodes  --kubeconfig admin.conf.txt 
+NAME            STATUS   ROLES                  AGE   VERSION
+control-plane   Ready    control-plane,master   9d    v1.23.5
+node1           Ready    <none>                 9d    v1.23.5
+fire@ashutoshhs-MacBook-Air Desktop % 
+fire@ashutoshhs-MacBook-Air Desktop % 
+fire@ashutoshhs-MacBook-Air Desktop % kubectl  cluster-info   --kubeconfig admin.conf.txt 
+Kubernetes control plane is running at https://18.211.91.213:6443
+CoreDNS is running at https://18.211.91.213:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+fire@ashutoshhs-MacBook-Air Desktop % 
+
+
+```
+
+### saving file to home directory by the name of config 
+
+```
+ 
+fire@ashutoshhs-MacBook-Air Desktop % mkdir  ~/.kube
+mkdir: /Users/fire/.kube: File exists
+fire@ashutoshhs-MacBook-Air Desktop % cp  admin.conf.txt  ~/.kube/config 
+fire@ashutoshhs-MacBook-Air Desktop % 
+fire@ashutoshhs-MacBook-Air Desktop % kubectl  get nodes
+NAME            STATUS   ROLES                  AGE   VERSION
+control-plane   Ready    control-plane,master   9d    v1.23.5
+node1           Ready    <none>                 9d    v1.23.5
+```
 
 
 
