@@ -253,5 +253,41 @@ ashupod-567      1/1     Running   0          23s     192.168.166.166   node1   
 muskan-123       1/1     Running   0          6m49s   192.168.50.199    minion3   <none>           <none>
 muthupod-123     1/1     Running   0      
 ```
+### Deleting all the pods 
 
+```
+ kubectl  delete pods --all
+pod "anandapod-111" deleted
+pod "arunpod-1" deleted
+pod "arunpod-2" deleted
+pod "ashupod-123" deleted
+pod "ashupod-567" deleted
+pod "muskan-123" deleted
+pod "muthupod-123" deleted
+pod "poojapod-123" deleted
+```
+### auto generate YAML / JSON 
+
+```
+kubectl  run  ashupod555 --image=docker.io/dockerashu/ashuwebapp:apr25v1   --port 80     --dry-run=client -o yaml 
+
+kubectl  run  ashupod555 --image=docker.io/dockerashu/ashuwebapp:apr25v1   --port 80     --dry-run=client -o json
+
+ kubectl  run  ashupod555 --image=docker.io/dockerashu/ashuwebapp:apr25v1   --port 80     --dry-run=client -o yaml  >auto.yaml
+ 
+ ```
+ 
+ ### deploy pod 
+ 
+ ```
+ kubectl apply -f  auto.yaml 
+pod/ashupod555 created
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get pods
+NAME         READY   STATUS             RESTARTS   AGE
+ashupod555   1/1     Running            0          5s
+sudha-123    0/1     ImagePullBackOff   0          4m28s
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get pods -o wide
+NAME         READY   STATUS             RESTARTS   AGE     IP                NODE      NOMINATED NODE   READINESS GATES
+ashupod555   1/1     Running            0          16s     192.168.50.200    minion3   <none>           <none>
+ ```
 
