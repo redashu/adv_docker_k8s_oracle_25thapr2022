@@ -383,6 +383,75 @@ NAME                  TYPE                                  DATA   AGE
 ashusec2              kubernetes.io/dockerconfigjson        1      26s
 ```
 
+### Networking in k8s 
+
+<img src="net.png">
+
+### Understanding google.com as k8s apps 
+
+<img src="net1.png">
+
+### Container networking --
+
+<img src="cnet.png">
+
+### CNI plugins 
+
+<img src="cnip.png">
+
+### check cni in current k8s 
+
+```
+kubectl  get  pods -n kube-system
+NAME                                      READY   STATUS    RESTARTS        AGE
+calico-kube-controllers-7c845d499-drpx4   1/1     Running   3 (4d19h ago)   9d
+calico-node-dvc2j                         1/1     Running   0               4h55m
+calico-node-q6xgd                         1/1     Running   3 (4d19h ago)   9d
+calico-node-sl28x                         1/1     Running   3 (4d19h ago)   9d
+calico-node-t96pj                         1/1     Running   0               4h55m
+```
+## CNI bridge 
+
+<img src="cnib.png">
+
+### POd to pod communication is by default allowed 
+
+```
+ kubectl  get po  -o wide      
+NAME          READY   STATUS    RESTARTS   AGE   IP                NODE      NOMINATED NODE   READINESS GATES
+ashuapp2      1/1     Running   0          65m   192.168.179.224   minion2   <none>           <none>
+ashupod-123   1/1     Running   0          91m   192.168.50.209    minion3   <none>           <none>
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % kubectl  run -it --rm  alpine 
+error: required flag(s) "image" not set
+fire@ashutoshhs-MacBook-Air ~ % kubectl  run -it --rm  --image=alpine --command sh 
+If you don't see a command prompt, try pressing enter.
+/ # 
+/ # ping  192.168.179.224
+PING 192.168.179.224 (192.168.179.224): 56 data bytes
+64 bytes from 192.168.179.224: seq=0 ttl=62 time=0.855 ms
+64 bytes from 192.168.179.224: seq=1 ttl=62 time=0.633 ms
+^C
+--- 192.168.179.224 ping statistics ---
+2 packets transmitted, 2 packets received, 0% packet loss
+round-trip min/avg/max = 0.633/0.744/0.855 ms
+/ # ping  192.168.50.209
+PING 192.168.50.209 (192.168.50.209): 56 data bytes
+64 bytes from 192.168.50.209: seq=0 ttl=63 time=0.094 ms
+64 bytes from 192.168.50.209: seq=1 ttl=63 time=0.084 ms
+^C
+--- 192.168.50.209 ping statistics ---
+2 packets transmitted, 2 packets received, 0% packet loss
+round-trip min/avg/max = 0.084/0.089/0.094 ms
+/ # exit
+Session ended, resume using 'kubectl attach sh -c sh -i -t' command when the pod is running
+pod "sh" deleted
+
+
+```
+
+
 
 
 
