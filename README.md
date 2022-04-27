@@ -214,6 +214,92 @@ kubectl  get po -o wide
  1131  kubectl  logs  ashutoshhwebapp  
 ```
 
+## Controllers in kubernetes -- 
+
+<img src="controller.png">
+
+### Deployment in k8s 
+
+```
+kubectl  create  deployment  ashuapp --image=docker.io/dockerashu/ashuwebapp:apr25v1  -
+-port 80 --dry-run=client  -o yaml  >deployment.yaml
+```
+
+### new apiversion in k8s for deployment 
+
+<img src="dep.png">
+
+### creating POD using deployment 
+
+```
+ kubectl  apply -f  deployment.yaml 
+deployment.apps/ashuapp created
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get deploy
+NAME      READY   UP-TO-DATE   AVAILABLE   AGE
+ashuapp   1/1     1            1           13s
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  po
+NAME                       READY   STATUS    RESTARTS   AGE
+ashuapp-6758d7b585-57mmq   1/1     Running   0          82s
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  po -o wide
+NAME                       READY   STATUS    RESTARTS   AGE    IP               NODE      NOMINATED NODE   READINESS GATES
+ashuapp-6758d7b585-57mmq   1/1     Running   0          102s   192.168.50.218   minion3   <none>           <none>
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  delete pod ashuapp-6758d7b585-57mmq
+pod "ashuapp-6758d7b585-57mmq" deleted
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  po -o wide                    
+NAME                       READY   STATUS    RESTARTS   AGE   IP               NODE      NOMINATED NODE   READINESS GATES
+ashuapp-6758d7b585-xgw5s   1/1     Running   0          8s    192.168.50.221   minion3   <none>           <none>
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % 
+
+
+```
+
+### creating service using expose command 
+
+```
+kubectl  expose deployment  ashuapp  --type NodePort --port 80 --name ashulb 
+service/ashulb exposed
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  svc
+NAME     TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+ashulb   NodePort   10.98.152.74   <none>        80:32756/TCP   11s
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  ep
+NAME     ENDPOINTS           AGE
+ashulb   192.168.50.221:80   29s
+```
+
+### np and LB service are same as of now 
+
+```
+kubectl  expose deployment  ashuapp  --type LoadBalancer --port 80 --name ashulb2
+service/ashulb2 exposed
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  svc
+NAME      TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+ashulb    NodePort       10.98.152.74    <none>        80:32756/TCP   2m17s
+ashulb2   LoadBalancer   10.96.127.237   <pending>     80:30231/TCP   5s
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  ep                                                                 
+NAME      ENDPOINTS           AGE
+ashulb    192.168.50.221:80   2m21s
+ashulb2   192.168.50.221:80   9s
+```
+### Horizental pod scaling 
+
+### manual 
+
+```
+ kubectl  scale deployment  ashuapp --replicas=3
+ 
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl get po -o wide
+NAME                       READY   STATUS    RESTARTS   AGE    IP                NODE      NOMINATED NODE   READINESS GATES
+ashuapp-6758d7b585-q7tmx   1/1     Running   0          100s   192.168.179.217   minion2   <none>           <none>
+ashuapp-6758d7b585-v8hnz   1/1     Running   0          100s   192.168.166.180   node1     <none>           <none>
+ashuapp-6758d7b585-xgw5s   1/1     Running   0          18m    192.168.50.221    minion3   <none>           <none>
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl get svc 
+NAME     TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+ashulb   NodePort   10.98.152.74   <none>        80:32756/TCP   14m
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl get ep 
+NAME     ENDPOINTS                                                 AGE
+ashulb   192.168.166.180:80,192.168.179.217:80,192.168.50.221:80   14m
+```
+
 
 
 
