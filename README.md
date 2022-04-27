@@ -387,4 +387,16 @@ fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get deploy
 NAME      READY   UP-TO-DATE   AVAILABLE   AGE
 ashuapp   2/2     2            2           31m
 ```
+### to test hap we can use this script inside k8s 
+
+```
+kubectl  run attack -it --rm  --image=busybox --command sh 
+If you don't see a command prompt, try pressing enter.
+/ # 
+/ # 
+/ # while sleep 0.01; do wget -q -O- http://php-apache; done^C
+/ # 
+
+```
+
 
