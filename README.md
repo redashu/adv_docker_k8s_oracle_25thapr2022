@@ -300,6 +300,91 @@ NAME     ENDPOINTS                                                 AGE
 ashulb   192.168.166.180:80,192.168.179.217:80,192.168.50.221:80   14m
 ```
 
+### HPA in k8s 
+
+<img src="hpa1.png">
+
+###
+
+<img src="hpa2.png">
+
+### Deploy the deployment 
+
+```
+kubectl apply -f deployment.yaml 
+deployment.apps/ashuapp created
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get deploy 
+NAME      READY   UP-TO-DATE   AVAILABLE   AGE
+ashuapp   1/1     1            1           27m
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl get po
+NAME                       READY   STATUS    RESTARTS   AGE
+ashuapp-868fc9dfdf-v9xqq   1/1     Running   0          27m
+```
+
+### deploy metric server 
+
+```
+kubectl  apply -f https://raw.githubusercontent.com/redashu/k8s/hpa/hpa/components.yaml
+serviceaccount/metrics-server unchanged
+clusterrole.rbac.authorization.k8s.io/system:aggregated-metrics-reader unchanged
+clusterrole.rbac.authorization.k8s.io/system:metrics-server unchanged
+rolebinding.rbac.authorization.k8s.io/metrics-server-auth-reader unchanged
+clusterrolebinding.rbac.authorization.k8s.io/metrics-server:system:auth-delegator unchanged
+clusterrolebinding.rbac.authorization.k8s.io/system:metrics-server unchanged
+service/metrics-server unchanged
+deployment.apps/metrics-server configured
+apiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io unchanged
+fire@ashutoshhs-MacBook-Air Desktop % 
+fire@ashutoshhs-MacBook-Air Desktop % 
+fire@ashutoshhs-MacBook-Air Desktop % kubectl  get po -n kube-system 
+NAME                                      READY   STATUS    RESTARTS      AGE
+calico-kube-controllers-7c845d499-drpx4   1/1     Running   4 (8h ago)    10d
+calico-node-dvc2j                         1/1     Running   1 (8h ago)    28h
+calico-node-q6xgd                         1/1     Running   4 (8h ago)    10d
+calico-node-sl28x                         1/1     Running   4 (8h ago)    10d
+calico-node-t96pj                         1/1     Running   1 (8h ago)    28h
+coredns-64897985d-l872g                   1/1     Running   4 (8h ago)    10d
+coredns-64897985d-ld4c9                   1/1     Running   4 (8h ago)    10d
+etcd-control-plane                        1/1     Running   4 (8h ago)    10d
+kube-apiserver-control-plane              1/1     Running   7 (8h ago)    10d
+kube-controller-manager-control-plane     1/1     Running   4 (8h ago)    10d
+kube-proxy-6hnq6                          1/1     Running   4 (8h ago)    10d
+kube-proxy-d9hsf                          1/1     Running   1 (8h ago)    28h
+kube-proxy-gqhvl                          1/1     Running   4 (8h ago)    10d
+kube-proxy-wvbcr                          1/1     Running   1 (8h ago)    28h
+kube-scheduler-control-plane              1/1     Running   4 (8h ago)    10d
+metrics-server-5c69db44f5-69ctm           1/1     Running   5 (86m ago)   10d
+```
+
+### source info for metric server 
+
+[link](https://github.com/kubernetes-sigs/metrics-server)
 
 
+### Deployment of hpa 
+
+```
+kubectl  get deploy 
+NAME      READY   UP-TO-DATE   AVAILABLE   AGE
+ashuapp   1/1     1            1           28m
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl get  svc
+No resources found in ashu-oci namespace.
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl expose deployment  ashuapp --type NodePort --port 80 --name s1 
+service/s1 exposed
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl get svc
+NAME   TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+s1     NodePort   10.99.125.133   <none>        80:31715/TCP   4s
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % 
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl autoscale deployment ashuapp --min=2 --max=10 --cpu-percent=5 
+horizontalpodautoscaler.autoscaling/ashuapp autoscaled
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  hpa
+NAME      REFERENCE            TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+ashuapp   Deployment/ashuapp   <unknown>/5%   2         10        0          4s
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  hpa
+NAME      REFERENCE            TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+ashuapp   Deployment/ashuapp   1%/5%     2         10        2          75s
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get deploy                                                    
+NAME      READY   UP-TO-DATE   AVAILABLE   AGE
+ashuapp   2/2     2            2           31m
+```
 
