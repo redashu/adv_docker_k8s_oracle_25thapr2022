@@ -3,13 +3,15 @@ kind: Pod
 metadata:
   creationTimestamp: null
   labels: # myapp label 
+    x: helloashu1
     run: ashupod555
-    x: helloashu
-  name: ashupod555 # name of pod 
+  name: ashupodnewapp # name of pod 
 spec:
   containers:
   - image: docker.io/dockerashu/ashuwebapp:apr25v1 # name of image
-    name: ashupod555 # name of container 
+    name: ashupod55567 # name of container 
+    ports:
+    - containerPort: 80
     resources: {}
     tty: true
   dnsPolicy: ClusterFirst
