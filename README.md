@@ -193,6 +193,27 @@ ashusvc1   192.168.50.254:80   9m19s
 fire@ashutoshhs-MacBook-Air k8s_app_deploy % 
 ```
 
+### solution 
+
+```
+kubectl  get po -o wide
+ 1117  kubectl  get svc
+ 1118  kubectl  delete all --all
+ 1119  kubectl  run   ashutoshhwebapp --image=httpd --dry-run=client -o yaml >q2.yaml 
+ 1120  kubectl  get no
+ 1121  kubectl apply -f q2.yaml
+ 1122  kubectl  get po
+ 1123  kubectl  logs  ashutoshhwebapp
+ 1124  kubectl  logs  ashutoshhwebapp  >logs.txt
+ 1125  ls
+ 1126  kubectl  exec -it ashutoshhwebapp  -- bash 
+ 1127  kubectl cp  logs.txt  ashutoshhwebapp:/oracle/
+ 1128  kubectl  exec -it ashutoshhwebapp  -- bash 
+ 1129  kubectl  exec -it ashutoshhwebapp  -- bash 
+ 1130  kubectl  logs  ashutoshhwebapp  >logs.txt
+ 1131  kubectl  logs  ashutoshhwebapp  
+```
+
 
 
 
