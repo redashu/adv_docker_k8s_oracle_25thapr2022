@@ -125,6 +125,74 @@ fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get po  --show-labels
 NAME         READY   STATUS    RESTARTS   AGE   LABELS
 ashupod555   1/1     Running   0          25m   run=ashupod555,x=helloashu
 ```
+### creating Internal LB using service Resource in k8s 
+
+<img src="svc.png">
+
+### Nodeport and Loadbalancer 
+<img src="lbnp.png">
+
+### Deploy Nodeport service type 
+
+### check pod status 
+
+```
+ kubectl apply -f auto.yaml 
+pod/ashupod5557 created
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get po -owide
+NAME          READY   STATUS    RESTARTS   AGE   IP               NODE      NOMINATED NODE   READINESS GATES
+ashupod5557   1/1     Running   0          7s    192.168.50.254   minion3   <none>           <none>
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get po --show-labels
+NAME          READY   STATUS    RESTARTS   AGE   LABELS
+ashupod5557   1/1     Running   0          13s   run=ashupod555,x=helloashu1
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % 
+
+```
+
+### creating nodeport service 
+
+```
+kubectl  create  service  nodeport  ashusvc1 --tcp 1234:80  --dry-run=client -o yaml >a
+shulb1.yaml 
+```
+
+### creating service without matching podselector label 
+
+```
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get po --show-labels
+NAME          READY   STATUS    RESTARTS   AGE     LABELS
+ashupod5557   1/1     Running   0          7m29s   run=ashupod555,x=helloashu1
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % 
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  apply -f  ashulb1.yaml 
+service/ashusvc1 created
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl   get service 
+NAME       TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+ashusvc1   NodePort   10.104.28.219   <none>        1234:31574/TCP   17s
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % 
+fire@ashutoshhs-MacBook-Air k8s_app_deploy %                       
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % 
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl   get endpoints 
+NAME       ENDPOINTS   AGE
+ashusvc1   <none>      68s
+```
+
+### now matching label and finding ep 
+
+```
+kubectl apply -f  ashulb1.yaml
+service/ashusvc1 configured
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  svc -o wide     
+NAME       TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE   SELECTOR
+ashusvc1   NodePort   10.104.28.219   <none>        1234:31574/TCP   9m    run=ashupod555,x=helloashu1
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get po -o wide       
+NAME          READY   STATUS    RESTARTS   AGE   IP               NODE      NOMINATED NODE   READINESS GATES
+ashupod5557   1/1     Running   0          21m   192.168.50.254   minion3   <none>           <none>
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  ep       
+NAME       ENDPOINTS           AGE
+ashusvc1   192.168.50.254:80   9m19s
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % 
+```
+
 
 
 
