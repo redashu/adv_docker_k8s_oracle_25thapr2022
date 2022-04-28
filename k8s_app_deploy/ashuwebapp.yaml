@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ashupod-123  # name of pod 
+spec:
+  containers:
+  - name: ashuc1 # name of contianer 
+    image: docker.io/dockerashu/ashuwebapp:apr25v1 # image from docker hub 
+    ports: # app port number 
+    - containerPort: 80
