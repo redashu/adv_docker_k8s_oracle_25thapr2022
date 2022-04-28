@@ -207,4 +207,35 @@ fire@ashutoshhs-MacBook-Air ~ %
 
 ```
 
+### get dashboard token using given method 
+
+```
+ kubectl  get  secret  -n kubernetes-dashboard 
+NAME                               TYPE                                  DATA   AGE
+default-token-282zv                kubernetes.io/service-account-token   3      25m
+kubernetes-dashboard-certs         Opaque                                0      25m
+kubernetes-dashboard-csrf          Opaque                                1      25m
+kubernetes-dashboard-key-holder    Opaque                                2      25m
+kubernetes-dashboard-token-km56d   kubernetes.io/service-account-token   3      25m
+fire@ashutoshhs-MacBook-Air ~ % kubectl describe  secret kubernetes-dashboard-token-km56d   -n kubernetes-dashboard 
+Name:         kubernetes-dashboard-token-km56d
+Namespace:    kubernetes-dashboard
+Labels:       <none>
+Annotations:  kubernetes.io/service-account.name: kubernetes-dashboard
+              kubernetes.io/service-account.uid: 55692ce7-0fe8-43f9-90b8-2cf13aea4198
+
+Type:  kubernetes.io/service-account-token
+
+Data
+====
+ca.crt:     1099 bytes
+namespace:  20 bytes
+token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ikc4Zmp5VERyUzFLRWpVMkdMMXBGM0haRXFNX2VYNGl4X1BzaGhzRFNySWcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJrdW
+```
+
+### give access permission to dashbaord 
+
+```
+kubectl create clusterrolebinding power --clusterrole=cluster-admin  --serviceaccount=kubernetes-dashboard:kubernetes-dashboard
+```
 
