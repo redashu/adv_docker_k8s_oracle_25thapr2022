@@ -431,5 +431,35 @@ fire@ashutoshhs-MacBook-Air ~ %
 
 <img src="st.png">
 
+### volumes and remote / local storage 
+
+<img src="volume.png">
+
+### testing hostPath type volume -- which will take storage from Minion Node
+
+```
+kubectl  run log-gen --image=alpine --dry-run=client -oyaml >loggen.yaml
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl apply -f  loggen.yaml 
+pod/log-gen created
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % 
+
+```
+### checking logs 
+
+```
+ kubectl  get  po 
+NAME      READY   STATUS    RESTARTS   AGE
+log-gen   1/1     Running   0          46s
+fire@ashutoshhs-MacBook-Air ~ % kubectl  exec  log-gen -- cat  /mnt/logs.txt 
+hello i am container
+hello i am container
+hello i am container
+hello i am container
+hello i am container
+hello i am container
+hello i am container
+
+```
+
 
 
