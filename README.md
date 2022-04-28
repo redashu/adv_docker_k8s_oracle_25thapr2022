@@ -427,5 +427,9 @@ fire@ashutoshhs-MacBook-Air ~ %
 
 
 ```
+### storgae in k8s 
+
+<img src="st.png">
+
 
 
