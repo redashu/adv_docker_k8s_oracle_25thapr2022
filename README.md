@@ -275,4 +275,157 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 
 <img src="lbprob.png">
 
+### Deploy nginx ingress controller in OKE -- 
+
+```
+ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.2.0/deploy/static/provider/cloud/deploy.yaml
+namespace/ingress-nginx created
+serviceaccount/ingress-nginx created
+serviceaccount/ingress-nginx-admission created
+role.rbac.authorization.k8s.io/ingress-nginx created
+role.rbac.authorization.k8s.io/ingress-nginx-admission created
+clusterrole.rbac.authorization.k8s.io/ingress-nginx created
+clusterrole.rbac.authorization.k8s.io/ingress-nginx-admission created
+rolebinding.rbac.authorization.k8s.io/ingress-nginx created
+rolebinding.rbac.authorization.k8s.io/ingress-nginx-admission created
+clusterrolebinding.rbac.authorization.k8s.io/ingress-nginx created
+clusterrolebinding.rbac.authorization.k8s.io/ingress-nginx-admission created
+configmap/ingress-nginx-controller created
+service/ingress-nginx-controller created
+service/ingress-nginx-controller-admission created
+deployment.apps/ingress-nginx-controller created
+job.batch/ingress-nginx-admission-create created
+job.batch/ingress-nginx-admission-patch created
+ingressclass.networking.k8s.io/nginx created
+validatingwebhookconfiguration.admissionregistration.k8s.io/ingress-nginx-admission created
+learntechb@cloudshell:~ (us-phoenix-1)$ kubectl  get ns
+NAME              STATUS   AGE
+default           Active   131m
+ingress-nginx     Active   11s
+kube-node-lease   Active   131m
+kube-public       Active   131m
+kube-system       Active   131m
+learntechb@cloudshell:~ (us-phoenix-1)$ kubectl  get all -n ingress-nginx 
+NAME                                            READY   STATUS      RESTARTS   AGE
+pod/ingress-nginx-admission-create--1-c6wbb     0/1     Completed   0          29s
+pod/ingress-nginx-admission-patch--1-wpk9r      0/1     Completed   0          29s
+pod/ingress-nginx-controller-5849c9f946-5bxc7   0/1     Running     0          29s
+
+NAME                                         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
+service/ingress-nginx-controller             LoadBalancer   10.96.58.157   <pending>     80:30290/TCP,443:30341/TCP   29s
+service/ingress-nginx-controller-admission   ClusterIP      10.96.10.161   <none>        443/TCP                      29s
+
+NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/ingress-nginx-controller   0/1     1            0           29s
+
+NAME                                                  DESIRED   CURRENT   READY   AGE
+replicaset.apps/ingress-nginx-controller-5849c9f946   1         1         0       29s
+
+NAME                                       COMPLETIONS   DURATION   AGE
+job.batch/ingress-nginx-admission-create   1/1           4s         29s
+job.batch/ingress-nginx-admission-patch    1/1           4s         29s
+learntechb@cloudshell:~ (us-phoenix-1)$ 
+```
+
+### nginx ingress deployment URL 
+
+[nginx_ingress](https://kubernetes.github.io/ingress-nginx/deploy/)
+
+
+### Ingress rules 
+
+<img src="ingress.png">
+
+### Implementing deploy with Ingress rules 
+
+### creating deployment 
+
+```
+kubectl  create  deployment  ashu  --image=nginx --port 80
+deployment.apps/ashu created
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  deploy 
+NAME   READY   UP-TO-DATE   AVAILABLE   AGE
+ashu   1/1     1            1           8s
+fire@ashutoshhs-MacBook-Air ~ % 
+
+```
+
+### creating Internal LB with clusterIP service 
+
+```
+kubectl  expose deploy  ashu  --type ClusterIP --port 80 --name ashulb1 
+service/ashulb1 exposed
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  svc
+NAME      TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+ashulb1   ClusterIP   10.104.18.216   <none>        80/TCP    4s
+```
+
+### update webapp 
+
+```
+ kubectl  exec -it  ashu-5f7b657f5d-dkn9n  -- bash 
+root@ashu-5f7b657f5d-dkn9n:/# 
+root@ashu-5f7b657f5d-dkn9n:/# cd /usr/share/nginx/html/
+root@ashu-5f7b657f5d-dkn9n:/usr/share/nginx/html# ls
+50x.html  index.html
+root@ashu-5f7b657f5d-dkn9n:/usr/share/nginx/html# echo "Hello i am ashutoshh page!!..(:"  >index.html 
+echo "Hello i am ashutoshh pagels..(:"  >index.html 
+root@ashu-5f7b657f5d-dkn9n:/usr/share/nginx/html# cat  index.html 
+Hello i am ashutoshh pagels..(:
+root@ashu-5f7b657f5d-dkn9n:/usr/share/nginx/html# exit
+exit
+
+```
+
+### HPA as best usage 
+
+```
+kubectl  get deploy 
+NAME   READY   UP-TO-DATE   AVAILABLE   AGE
+ashu   1/1     1            1           7m
+fire@ashutoshhs-MacBook-Air ~ % kubectl  autoscale  deploy ashu --min=1 --max=10 --cpu-percent=5
+horizontalpodautoscaler.autoscaling/ashu autoscaled
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  hpa
+NAME   REFERENCE         TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+ashu   Deployment/ashu   <unknown>/5%   1         10        1          16s
+fire@ashutoshhs-MacBook-Air ~ % 
+
+
+```
+
+### write Ingress first rule 
+
+```
+kubectl apply -f ashuingress_rule.yaml 
+ingress.networking.k8s.io/ashu-ingress-rule1 created
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl get ing
+NAME                 CLASS   HOSTS                                                  ADDRESS   PORTS   AGE
+ashu-ingress-rule1   nginx   ingresslb-apps-627550189.us-east-1.elb.amazonaws.com             80      6s
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % 
+
+```
+
+### final 
+
+```
+ kubectl  get deploy 
+NAME   READY   UP-TO-DATE   AVAILABLE   AGE
+ashu   1/1     1            1           21m
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  po    
+NAME                    READY   STATUS    RESTARTS   AGE
+ashu-5f7b657f5d-dkn9n   1/1     Running   0          21m
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  svc
+NAME      TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+ashulb1   ClusterIP   10.104.18.216   <none>        80/TCP    20m
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  hpa
+NAME   REFERENCE         TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
+ashu   Deployment/ashu   <unknown>/5%   1         10        1          14m
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get  ing
+NAME                 CLASS   HOSTS                                                  ADDRESS         PORTS   AGE
+ashu-ingress-rule1   nginx   ingresslb-apps-627550189.us-east-1.elb.amazonaws.com   172.31.31.223   80      2m12s
+fire@ashutoshhs-MacBook-Air ~ % 
+
+
+```
+
 
