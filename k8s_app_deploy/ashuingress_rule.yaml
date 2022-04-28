@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1 
+kind: Ingress
+metadata:
+  name: ashu-ingress-rule1
+  annotations: # some which we can't use in k8s directory --kind of plugin 
+    nginx.ingress.kubernetes.io/rewrite-target: / # for supporting redirection 
+spec:
+  ingressClassName: nginx # what ingress type we are using like nginx / haproxy etc
+  rules: # for redirection from ingress to service 
+  - host: ingresslb-apps-627550189.us-east-1.elb.amazonaws.com   # name of website / domain 
+    http: # we are using http protocol
+      paths: # url path like oracle8s.com/ashu
+      - path: /ashu 
+        pathType: Prefix 
+        backend: # where to forward 
+          service:
+            name: ashulb1
+            port:
+              number: 80 
