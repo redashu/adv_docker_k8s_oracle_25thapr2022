@@ -238,4 +238,8 @@ token:      eyJhbGciOiJSUzI1NiIsImtpZCI6Ikc4Zmp5VERyUzFLRWpVMkdMMXBGM0haRXFNX2VY
 ```
 kubectl create clusterrolebinding power --clusterrole=cluster-admin  --serviceaccount=kubernetes-dashboard:kubernetes-dashboard
 ```
+### kubernetes service in cloud Model 
+
+<img src="cloudk8s.png">
+
 
