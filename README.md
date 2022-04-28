@@ -242,4 +242,37 @@ kubectl create clusterrolebinding power --clusterrole=cluster-admin  --serviceac
 
 <img src="cloudk8s.png">
 
+### cloud based 
+```
+1)$ kubectl get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+ashulb1      NodePort    10.96.202.115   <none>        80:31284/TCP   107s
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        25m
+learntechb@cloudshell:~ (us-phoenix-1)$ kubectl get nodes
+NAME          STATUS   ROLES   AGE     VERSION
+10.0.10.245   Ready    node    7m34s   v1.22.5
+10.0.10.84    Ready    node    46s     v1.22.5
+learntechb@cloudshell:~ (us-phoenix-1)$ kubectl expose deploy ashuapp1 --type LoadBalancer --port 80 --name ashulb2
+service/ashulb2 exposed
+learntechb@cloudshell:~ (us-phoenix-1)$ kubectl get svc
+NAME         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+ashulb1      NodePort       10.96.202.115   <none>        80:31284/TCP   2m27s
+ashulb2      LoadBalancer   10.96.243.15    <pending>     80:31077/TCP   6s
+kubernetes   ClusterIP      10.96.0.1       <none>        443/TCP        26m
+learntechb@cloudshell:~ (us-phoenix-1)$ kubectl get svc
+NAME         TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
+ashulb1      NodePort       10.96.202.115   <none>          80:31284/TCP   3m10s
+ashulb2      LoadBalancer   10.96.243.15    144.24.11.169   80:31077/TCP   49s
+kubernetes   ClusterIP      10.96.0.1       <none>          443/TCP        26m
+learntechb@cloudshell:~ (us-phoenix-1)$ kubectl cluster-info 
+Kubernetes control plane is running at https://144.24.53.178:6443
+CoreDNS is running at https://144.24.53.178:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+```
+
+### Loadbalancer service problem with huge set of applications 
+
+<img src="lbprob.png">
+
 
