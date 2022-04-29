@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels: # deployment label 
+    app: ashuapp
+  name: ashuapp # name of deployment 
+spec:
+  replicas: 1 # number of pod we want everytime 
+  selector:
+    matchLabels:
+      app: ashuapp
+  strategy: {}
+  template: # using template deployment will create PODs 
+    metadata:
+      creationTimestamp: null
+      labels: # label of pods 
+        app: ashuapp
+    spec:
+      containers:
+      - image: docker.io/dockerashu/ashuwebapp:apr25v1
+        name: ashuwebapp
+        ports:
+        - containerPort: 80
+        resources: # there is no limit in vertical scaling 
+          requests:
+            cpu: 100m # 1 vcpu = 1000 mili core 
+          limits:
+            cpu: 300m 
+status: {}

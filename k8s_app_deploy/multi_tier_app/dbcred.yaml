@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  db_pass: T3JhY2xlMDk4Iz8=
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: ashudb-cred

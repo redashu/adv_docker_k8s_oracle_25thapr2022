@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: log-gen
+  name: log-gen
+spec:
+  nodeName: minion3 
+  volumes: # for creating volume during container creation time 
+  - name: ashuvol1 
+    hostPath: # source from where we want storge 
+      path: /etc # will be considered from Minion Node where pod will be scheduled
+      type: Directory #  if not present then create this location 
+  containers:
+  - image: alpine
+    name: log-gen
+    volumeMounts: # to mount volume inside container 
+    - name: ashuvol1
+      mountPath: /mnt/data/ # inside container at this location 
+      readOnly: true
+    command: ["sh","-c","while true;do echo 'hello i am container' >>/mnt/data/logs.txt ; sleep 10;done"]
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

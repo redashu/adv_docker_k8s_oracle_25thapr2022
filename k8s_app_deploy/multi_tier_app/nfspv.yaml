@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ashu-pv
+spec:
+  capacity:
+    storage: 2Gi # you guys can choose 2Gi to 10Gi 
+  accessModes:
+    - ReadWriteOnce # only single node binding is allowed
+  storageClassName: manual 
+  nfs:
+    server: 172.31.24.74
+    path: "/data/ashudb"
+ 

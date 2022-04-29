@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ashu-pvc # part of personal namespace 
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: manual 
+  resources:
+    requests:
+      storage: 3Gi
+  
