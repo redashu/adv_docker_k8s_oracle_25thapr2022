@@ -293,6 +293,37 @@ fire@ashutoshhs-MacBook-Air k8s_app_deploy %
 
 ```
 
+### Daemonset 
+
+<img src="ds.png">
+
+### 
+```
+kubectl apply -f ds.yaml 
+daemonset.apps/ashu-container-monitoring created
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl get  ds
+NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+ashu-container-monitoring   3         3         1       3            1           <none>          6s
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  no
+NAME            STATUS   ROLES                  AGE    VERSION
+control-plane   Ready    control-plane,master   12d    v1.23.5
+minion2         Ready    <none>                 3d4h   v1.23.6
+minion3         Ready    <none>                 3d4h   v1.23.6
+node1           Ready    <none>                 12d    v1.23.5
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl get  ds 
+NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+ashu-container-monitoring   3         3         3       3            3           <none>          17s
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl get  po
+NAME                              READY   STATUS    RESTARTS   AGE
+ashu-container-monitoring-cn4kh   1/1     Running   0          25s
+ashu-container-monitoring-dcnzs   1/1     Running   0          25s
+ashu-container-monitoring-lnr2r   1/1     Running   0          25s
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl get  po -o wide
+NAME                              READY   STATUS    RESTARTS   AGE   IP                NODE      NOMINATED NODE   READINESS GATES
+ashu-container-monitoring-cn4kh   1/1     Running   0          29s   192.168.179.255   minion2   <none>           <none>
+ashu-container-monitoring-dcnzs   1/1     Running   0          29s   192.168.166.149   node1     <none>           <none>
+ashu-container-monitoring-lnr2r   1/1     Running   0          29s   192.168.50.220    minion3   <none>           <none>
+```
 
 
 
