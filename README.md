@@ -324,6 +324,48 @@ ashu-container-monitoring-cn4kh   1/1     Running   0          29s   192.168.179
 ashu-container-monitoring-dcnzs   1/1     Running   0          29s   192.168.166.149   node1     <none>           <none>
 ashu-container-monitoring-lnr2r   1/1     Running   0          29s   192.168.50.220    minion3   <none>           <none>
 ```
+## HELM 
+
+### adding repo 
+```
+helm repo add bitnami https://charts.bitnami.com/bitnami
+```
+
+### list repo 
+
+```
+helm repo ls
+WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /Users/fire/.kube/config
+WARNING: Kubernetes configuration file is world-readable. This is insecure. Location: /Users/fire/.kube/config
+NAME                	URL                                    
+bitnami             	https://charts.bitnami.com/bitnami     
+elastic             	https://Helm.elastic.co                
+kubernetes-dashboard	https://kubernetes.github.io/dashboard/
+fire@ashutoshhs-MacBook-Air ~ % 
+
+```
+
+###  doing helm search 
+
+```
+ helm search repo nodejs              
+WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /Users/fire/.kube/config
+WARNING: Kubernetes configuration file is world-readable. This is insecure. Location: /Users/fire/.kube/config
+NAME         	CHART VERSION	APP VERSION	DESCRIPTION                                       
+bitnami/ghost	16.0.11      	4.36.3     	Ghost is an open source publishing platform des...
+bitnami/mean 	6.1.2        	4.6.2      	DEPRECATED MEAN is a free and open-source JavaS...
+bitnami/node 	17.0.2       	16.14.0    	Node.js is a runtime environment built on V8 Ja...
+fire@ashutoshhs-MacBook-Air ~ % helm search repo mysql 
+WARNING: Kubernetes configuration file is group-readable. This is insecure. Location: /Users/fire/.kube/config
+WARNING: Kubernetes configuration file is world-readable. This is insecure. Location: /Users/fire/.kube/config
+NAME                   	CHART VERSION	APP VERSION	DESCRIPTION                                       
+bitnami/mysql          	8.8.25       	8.0.28     	MySQL is a fast, reliable, scalable, and easy t...
+bitnami/phpmyadmin     	9.0.6        	5.1.3      	phpMyAdmin is a free software tool written in P...
+bitnami/mariadb        	10.3.6       	10.5.15    	MariaDB is an open source, community-developed ...
+bitnami/mariadb-cluster	1.0.2        	10.2.14    	DEPRECATED Chart to create a Highly available M...
+bitnami/mariadb-galera 	7.0.4        	10.6.7     	MariaDB Galera is a multi-master database clust...
+```
+
 
 
 
