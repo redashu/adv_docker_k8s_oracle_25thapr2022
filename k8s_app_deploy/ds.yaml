@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ashu-container-monitoring
+  
+  labels:
+    k8s-app: helloashu
+spec:
+  selector:
+    matchLabels:
+      name: helloashu 
+  template:
+    metadata:
+      labels:
+        name: helloashu
+    spec:
+      volumes:
+      - name: ashudockervol
+        hostPath:
+          path: /var/run/docker.sock
+          type: Socket
+      containers:
+      - name: ashuc007
+        image: portainer/portainer
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - name: ashudockervol
+          mountPath: /var/run/docker.sock
+        resources:
