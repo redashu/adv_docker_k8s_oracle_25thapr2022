@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: testd1
+  name: testd1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: testd1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: testd1
+    spec:
+      containers:
+      - image: docker.io/dockerashu/ashuwebapp:apr25v1
+        name: ashuwebapp
+        ports:
+        - containerPort: 80
+        readinessProbe: # this is for setting health check for internal LB 
+          httpGet:
+            path: /health.html
+            port: 80 
+            initialDelaySeconds: 3 # when we deploy app lets wait for 3 seconds 
+            periodSeconds: 2 # in every 2 seconds keep checking readiness probe
+        resources: {}
+status: {}
