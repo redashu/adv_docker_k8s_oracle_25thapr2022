@@ -157,4 +157,142 @@ ashuwebsvc1   NodePort    10.105.184.193   <none>        80:31435/TCP   3s
 
 ```
 
+### users and RBAC in k8s 
+
+<img src="users.png">
+
+## creating a custom namespace for particular user / customer 
+
+### creating namespace and checking things 
+
+```
+kubectl  create  ns  project-1    
+namespace/project-1 created
+fire@ashutoshhs-MacBook-Air ~ % kubectl   get  serviceaccount -n  project-1
+NAME      SECRETS   AGE
+default   1         34s
+fire@ashutoshhs-MacBook-Air ~ % kubectl   get  sa -n  project-1
+NAME      SECRETS   AGE
+default   1         47s
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % kubectl   get  secret -n  project-1
+NAME                  TYPE                                  DATA   AGE
+default-token-mw7mk   kubernetes.io/service-account-token   3      53s
+fire@ashutoshhs-MacBook-Air ~ % kubectl describe   secret  default-token-mw7mk  -n  project-1
+Name:         default-token-mw7mk
+Namespace:    project-1
+Labels:       <none>
+Annotations:  kubernetes.io/service-account.name: default
+              kubernetes.io/service-account.uid: 9d0650e8-f1e5-4f43-971a-3df326e3475b
+
+Type:  kubernetes.io/service-account-token
+
+Data
+
+```
+
+### lets check original config file 
+
+```
+kubectl  config  view
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: DATA+OMITTED
+    server: https://18.211.91.213:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    namespace: ashu-oci
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+current-context: kubernetes-admin@kubernetes
+kind: Config
+preferences: {}
+users:
+- name: kubernetes-admin
+  user:
+    client-certificate-data: REDACTED
+    client-key-data: REDACTED
+
+```
+
+### new config file is not having any permission 
+
+```
+kubectl  get  nodes  --kubeconfig  custom_kubeconfig.yaml 
+Error from server (Forbidden): nodes is forbidden: User "system:serviceaccount:project-1:default" cannot list resource "nodes" in API group "" at the cluster scope
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl cluster-info   --kubeconfig  custom_kubeconfig.yaml
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+Error from server (Forbidden): services is forbidden: User "system:serviceaccount:project-1:default" cannot list resource "services" in API group "" in the namespace "kube-system"
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl config get-contexts   --kubeconfig  custom_kubeconfig.yaml
+CURRENT   NAME          CLUSTER      AUTHINFO   NAMESPACE
+*         ashu-access   kubernetes   default    project-1
+
+```
+
+### creating role to that namespace 
+
+```
+ kubectl  create  role   pod-svc-access --resource=pod --verb=get,list,create,delete --resource=service      --verb=get,list,create   -n  project-1 
+role.rbac.authorization.k8s.io/pod-svc-access created
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get roles -n project-1
+NAME             CREATED AT
+pod-svc-access   2022-04-29T09:43:45Z
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % kubectl  create  role   ashurole2  --resource=pod --verb=get,list --resource=service      --verb=get,list,create,delete   -n  project-1
+role.rbac.authorization.k8s.io/ashurole2 created
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get roles -n project-1
+NAME             CREATED AT
+ashurole2        2022-04-29T09:45:22Z
+pod-svc-access   2022-04-29T09:43:45Z
+fire@ashutoshhs-MacBook-Air ~ % 
+
+```
+
+### creating role binding with service account 
+
+```
+ kubectl  create  rolebinding ashubind1  --role=pod-svc-access  --serviceaccount=project-1:default -n project-1
+rolebinding.rbac.authorization.k8s.io/ashubind1 created
+fire@ashutoshhs-MacBook-Air ~ % 
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get roles -n project-1
+NAME             CREATED AT
+ashurole2        2022-04-29T09:45:22Z
+pod-svc-access   2022-04-29T09:43:45Z
+fire@ashutoshhs-MacBook-Air ~ % kubectl  get rolebinding -n project-1
+NAME        ROLE                  AGE
+ashubind1   Role/pod-svc-access   19s
+fire@ashutoshhs-MacBook-Air ~ % 
+
+```
+
+### testing config file 
+
+```
+kubectl  get  nodes  --kubeconfig  custom_kubeconfig.yaml
+Error from server (Forbidden): nodes is forbidden: User "system:serviceaccount:project-1:default" cannot list resource "nodes" in API group "" at the cluster scope
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % 
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  pods  --kubeconfig  custom_kubeconfig.yaml
+No resources found in project-1 namespace.
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  svc  --kubeconfig  custom_kubeconfig.yaml
+No resources found in project-1 namespace.
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  ns  --kubeconfig  custom_kubeconfig.yaml
+Error from server (Forbidden): namespaces is forbidden: User "system:serviceaccount:project-1:default" cannot list resource "namespaces" in API group "" at the cluster scope
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % kubectl  get  deploy  --kubeconfig  custom_kubeconfig.yaml
+Error from server (Forbidden): deployments.apps is forbidden: User "system:serviceaccount:project-1:default" cannot list resource "deployments" in API group "apps" in the namespace "project-1"
+fire@ashutoshhs-MacBook-Air k8s_app_deploy % 
+
+```
+
+
+
 
